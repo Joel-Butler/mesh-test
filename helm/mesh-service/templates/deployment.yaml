@@ -37,12 +37,12 @@ spec:
             - name: http-svc-pod
               containerPort: 8081
               protocol: TCP
-              livenessProbe:
-                tcpSocket:
-                  port: http-svc-pod
-              readinessProbe:
-                tcpSocket:
-                  port: http-svc-pod
+          livenessProbe:
+            tcpSocket:
+              port: http-svc-pod
+          readinessProbe:
+            tcpSocket:
+              port: http-svc-pod
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
