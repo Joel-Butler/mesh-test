@@ -17,7 +17,7 @@ metadata:
     {{- end }}
     {{ if .Values.ingress.certManager}}
     {{ if .Values.ingress.certManager.issuer }}
-    cert-manager.io/issuer: {{ .Values.ingress.certManager.issuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.certManager.issuer }}
     {{ end }}
   {{- end }}
 spec:

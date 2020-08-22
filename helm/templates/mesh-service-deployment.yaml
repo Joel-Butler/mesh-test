@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        {{- include "mesh-test.selectorLabels" . | nindent 8 }}
+        {{- include "mesh-test.selectorLabels" . | nindent 8 }} 
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -34,17 +34,15 @@ spec:
           image: "{{ .Values.image.repository }}/{{ .Values.image.meshService }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: http-service-pod
               containerPort: 8081
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: http-service-pod
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            tcpSocket:
+              port: http-service-pod
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

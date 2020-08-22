@@ -10,6 +10,6 @@ spec:
     - port: 8081
       targetPort: 8081
       protocol: TCP
-      name: http
+      name: http-service
   selector:
     {{- include "mesh-test.selectorLabels" . | nindent 4 }}
