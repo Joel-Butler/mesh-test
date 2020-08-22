@@ -34,15 +34,15 @@ spec:
           image:  "{{ .Values.image.repository }}/{{ .Values.image.meshServer }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http-server-pod
+            - name: http-svr-pod
               containerPort: 8080
               protocol: TCP
           livenessProbe:
             tcpSocket:
-              port: http-server-pod
+              port: http-svr-pod
           readinessProbe:
             tcpSocket:
-              port: http-server-pod
+              port: http-svr-pod
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

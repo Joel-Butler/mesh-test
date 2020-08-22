@@ -10,6 +10,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: 8080
       protocol: TCP
-      name: http-server
+      name: http-svr
   selector:
     {{- include "mesh-test.selectorLabels" . | nindent 4 }}
