@@ -1,0 +1,14 @@
+FROM golang:1.15
+
+apt-get update && apt-get install -y --no-install-recommends \
+    	iptables \
+        vim \
+		busybox
+
+WORKDIR /go/src/app
+COPY ./mesh-service .
+
+RUN go get -d -v ./...
+RUN go install -v ./...
+
+CMD ["app"]

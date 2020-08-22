@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -32,19 +33,51 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Request: %s client: %s forwarded for: %s", r.URL.Path, r.RemoteAddr, r.Header.Get("X-FORWARDED-FOR"))
 }
 
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Server", "Go Health status server")
+	w.WriteHeader(200)
+}
+
 func main() {
 	//define environment variable
 	http.HandleFunc("/", handler)
 	meshServiceUrl = os.Getenv("JB_MESH_SERVICE")
 
 	if meshServiceUrl == "" {
-		meshServiceUrl = "http://localhost:8081"
+		meshServiceUrl = "http://localhost:8081/api"
 	}
+
+	wg := new(sync.WaitGroup)
+
+	wg.Add(2)
+
+	healthServer := http.NewServeMux()
+	healthServer.HandleFunc("/health", healthHandler)
+
+	apiserver := http.NewServeMux()
+	apiserver.HandleFunc("/", handler)
 
 	listenPort = os.Getenv("JB_MESH_SERVER_PORT")
 	if listenPort == "" {
 		listenPort = ":8080"
 	}
 
-	log.Fatal(http.ListenAndServe(listenPort, nil))
+	go func() {
+		server2 := http.Server{
+			Addr:    listenPort,
+			Handler: apiserver,
+		}
+		log.Fatal(server2.ListenAndServe())
+		wg.Done()
+	}()
+
+	go func() {
+		server1 := http.Server{
+			Addr:    ":8079", // :{port}
+			Handler: healthServer,
+		}
+		server1.ListenAndServe()
+		wg.Done()
+	}()
+	wg.Wait()
 }

@@ -47,7 +47,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: "JB_MESH_SERVICE"
-              value: "http://mesh-service:8081"
+              value: "http://mesh-service:8081/api"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

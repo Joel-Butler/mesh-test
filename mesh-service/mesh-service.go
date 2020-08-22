@@ -42,7 +42,7 @@ func main() {
 			Addr:    ":8081", // :{port}
 			Handler: apiserver,
 		}
-		server2.ListenAndServe()
+		log.Fatal(server2.ListenAndServe())
 		wg.Done()
 	}()
 
